@@ -57,6 +57,7 @@ def sendFile(location):
     # make sure api returns correctly
     if response != 'ok\n':
         logger('ERROR: File input error: '+location,syslog.LOG_ERR)
+        quit()
     logger('Sent '+location+' successfully.')
 
 if __name__ == '__main__':
