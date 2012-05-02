@@ -1,10 +1,15 @@
-
 ConfigKeeper-Client
 https://github.com/korylprince/ConfigKeeper-Client
 
 #Installing#
 
+I run this on Ubuntu servers. Keep that in mind.
+
 Copy client.py to any location you wish. Then create a config using the config.def as a base.
+
+Requires the watchdog module:
+
+sudo pip install watchdog
 
 If you have any issues or questions, email the email address below, or open an issue at:
 https://github.com/korylprince/ConfigKeeper-Client/issues
@@ -16,9 +21,9 @@ client.py /path/to/config
 
 The client logs to stdout as well as syslog.
 
-I suggest you use a cron job to run the client at regular intervals. Alternatively you could run it every time you change a config.
+The client will send each file specified in the config when you first run, then will monitor each file for changes and send that file on a change.
 
-Remember that the user you run client.py with must have access to the files in your config.
+You can specify files or directories in the list, but I recommend you specify only files so that temporary files do not fill up your list.
 
 #Copyright Information#
 

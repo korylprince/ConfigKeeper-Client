@@ -6,6 +6,16 @@ import sys
 import syslog
 import urllib
 import urllib2
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler 
+import time
+
+class watcher(FileSystemEventHandler):
+    """subclass to upload files"""
+
+    def on_any_event(self, event): 
+        logger('Change detected for '+event.src_path)
+        getFile(event.src_path)
 
 def logger(message,logtype=syslog.LOG_INFO):
     """
@@ -30,7 +40,7 @@ def getFile(location):
     """
     if not os.path.exists(location):
         logger('Error: '+location+' does not exist.',syslog.LOG_ERR)
-        quit()
+        return 0 
     if os.path.isdir(location):
         for f in os.listdir(location):
             getFile(location+'/'+f)
@@ -67,6 +77,8 @@ if __name__ == '__main__':
         quit()
     config = readConfig(sys.argv[1])
 
+    logger('ConfigKeeper Client started')
+
     # get settings
     try:
         url = config.get('settings','url')
@@ -76,6 +88,18 @@ if __name__ == '__main__':
     except ConfigParser.NoOptionError,msg:
         logger('ERROR: {0} not given in {1} section.'.format(msg.option,msg.section),syslog.LOG_ERR)
 
-    # go through list 
+    # go through list once on startup
     for f in files:
         getFile(f)
+    
+    # add watcher for each file/directory 
+    observer = Observer()
+    for f in files:
+        if os.path.isdir(f):
+            observer.schedule(watcher(),path=f,recursive=True)
+        else:
+            observer.schedule(watcher(),path=f,recursive=False)
+    observer.start()
+    # loop forever
+    while True:
+        time.sleep(1)
