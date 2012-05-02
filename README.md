@@ -11,13 +11,27 @@ Requires the watchdog module:
 
 sudo pip install watchdog
 
+Included is an init script that should work on Ubuntu/Debian systems.
+
+Copy configkeeper-client.sh to /etc/init.d/
+
+Copy configkeeper-client to /usr/bin/
+
+Copy config.def to /etc/configkeeper-client (file)
+
+Afterwards run
+
+sudo update-rc.d configkeeper-client defaults
+
 If you have any issues or questions, email the email address below, or open an issue at:
 https://github.com/korylprince/ConfigKeeper-Client/issues
 
 #Usage#
 
 config.def explains each option. Create your own config and run:
-client.py /path/to/config
+configkeeper-client /path/to/config
+
+Alternatively you can run it as a service as described above.
 
 The client logs to stdout as well as syslog.
 

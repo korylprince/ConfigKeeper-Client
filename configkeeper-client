@@ -10,7 +10,16 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler 
 import time
 
-class watcher(FileSystemEventHandler):
+class fileWatcher(FileSystemEventHandler):
+    """subclass to upload files"""
+
+    def on_any_event(self, event): 
+        if event.src_path not in files:
+            return 0
+        logger('Change detected for '+event.src_path)
+        getFile(event.src_path)
+
+class dirWatcher(FileSystemEventHandler):
     """subclass to upload files"""
 
     def on_any_event(self, event): 
@@ -93,13 +102,16 @@ if __name__ == '__main__':
         getFile(f)
     
     # add watcher for each file/directory 
-    observer = Observer()
+    fileObserver = Observer()
+    dirObserver = Observer()
     for f in files:
         if os.path.isdir(f):
-            observer.schedule(watcher(),path=f,recursive=True)
+            dirObserver.schedule(dirWatcher(),path=f,recursive=True)
         else:
-            observer.schedule(watcher(),path=f,recursive=False)
-    observer.start()
+            parent = os.path.split(f)[0]
+            fileObserver.schedule(fileWatcher(),path=parent,recursive=False)
+    fileObserver.start()
+    dirObserver.start()
     # loop forever
     while True:
         time.sleep(1)
