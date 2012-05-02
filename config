@@ -1,0 +1,9 @@
+[settings]
+# the url to post to.
+url=https://example.com/ConfigKeeper/default/api/files.json
+# Server name to send as
+server=server1.example.com
+# file list. Can either be a file or directory. Do not include tailing /
+files=/path/to/file,/path/to/directory
+# authentication key set in web code
+key=xxxx
